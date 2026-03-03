@@ -319,6 +319,7 @@ export default function App() {
   const [error, setError] = useState(null)
   const [expandedDomain, setExpandedDomain] = useState(null)
   const [currentDateRange, setCurrentDateRange] = useState(null)
+  const [showAll, setShowAll] = useState(false)
 
   // Fetch data on range change
   const fetchData = useCallback(async () => {
@@ -343,10 +344,10 @@ export default function App() {
 
     try {
       const [clickData, convData] = await Promise.all([
-        fetchAllRows('clicks', 'bridge_domain', dateRange.start, dateRange.end),
+        fetchAllRows('clicks', 'bridge_domain,af_clickid,raw_params', dateRange.start, dateRange.end),
         fetchAllRows(
           'conversions',
-          'campaign_name,platform,install_time,country',
+          'campaign_name,platform,install_time,country,af_clickid',
           dateRange.start,
           dateRange.end,
           [{ column: 'event_name', value: '%install%' }]
@@ -373,12 +374,24 @@ export default function App() {
     const convMap = {}
     const detailsMap = {}
 
+    // Build set of af_clickids that have utm_source set
+    const excludedClickIds = new Set()
+    if (!showAll) {
+      clicks.forEach((c) => {
+        if (c.raw_params && c.raw_params.utm_source && c.af_clickid) {
+          excludedClickIds.add(c.af_clickid)
+        }
+      })
+    }
+
     clicks.forEach((c) => {
+      if (!showAll && c.raw_params && c.raw_params.utm_source) return
       const d = c.bridge_domain
       if (d) clickMap[d] = (clickMap[d] || 0) + 1
     })
 
     conversions.forEach((c) => {
+      if (!showAll && c.af_clickid && excludedClickIds.has(c.af_clickid)) return
       const d = c.campaign_name
       if (d) {
         convMap[d] = (convMap[d] || 0) + 1
@@ -402,7 +415,7 @@ export default function App() {
         }
       })
       .sort((a, b) => b.conversions - a.conversions)
-  }, [clicks, conversions])
+  }, [clicks, conversions, showAll])
 
   // Summary stats
   const totalClicks = useMemo(
@@ -472,6 +485,22 @@ export default function App() {
                 {range.label}
               </button>
             ))}
+
+            <div className="ml-auto flex items-center gap-2">
+              <span className="text-xs text-muted">Show all</span>
+              <button
+                onClick={() => setShowAll((v) => !v)}
+                className={`relative w-9 h-5 rounded-full transition-colors duration-200 ${
+                  showAll ? 'bg-accent' : 'bg-surface-overlay'
+                }`}
+              >
+                <span
+                  className={`absolute top-0.5 left-0.5 w-4 h-4 rounded-full bg-white transition-transform duration-200 ${
+                    showAll ? 'translate-x-4' : ''
+                  }`}
+                />
+              </button>
+            </div>
           </div>
 
           {/* Custom date inputs */}
