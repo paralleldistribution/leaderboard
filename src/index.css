@@ -1,0 +1,106 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  color-scheme: dark;
+}
+
+body {
+  background-color: #0a0a0f;
+  color: #ffffff;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #252530;
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #35354a;
+}
+
+/* Custom date input styling */
+input[type='date'] {
+  color-scheme: dark;
+}
+
+input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.6);
+  cursor: pointer;
+}
+
+/* Skeleton shimmer */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    #1a1a25 25%,
+    #252530 50%,
+    #1a1a25 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* Row glow on hover */
+.row-glow:hover {
+  box-shadow: inset 3px 0 0 #a855f7, 0 0 20px rgba(168, 85, 247, 0.05);
+}
+
+/* Rank badge styles */
+.rank-gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1a1a25;
+}
+
+.rank-silver {
+  background: linear-gradient(135deg, #d1d5db, #9ca3af);
+  color: #1a1a25;
+}
+
+.rank-bronze {
+  background: linear-gradient(135deg, #f59e0b, #d97706);
+  color: #1a1a25;
+}
+
+/* Stat card subtle glow */
+.stat-glow {
+  box-shadow: 0 0 40px rgba(168, 85, 247, 0.06);
+}
+
+/* Mobile card */
+@media (max-width: 639px) {
+  .leaderboard-row {
+    border-radius: 12px;
+    background: #12121a;
+    border: 1px solid #252530;
+    margin-bottom: 8px;
+    padding: 14px 16px;
+  }
+
+  .leaderboard-row .expanded-panel {
+    margin-left: -16px;
+    margin-right: -16px;
+    padding: 0;
+  }
+}
