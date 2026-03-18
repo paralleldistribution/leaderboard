@@ -350,7 +350,7 @@ export default function App() {
           'campaign_name,platform,install_time,country,af_clickid',
           dateRange.start,
           dateRange.end,
-          [{ column: 'event_name', value: '%install%' }]
+          [{ column: 'postback_type', value: '%install%' }]
         ),
       ])
       setClicks(clickData)
